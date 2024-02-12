@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.15.5]
+        node-version: [16.20.2]
 
     steps:
       - uses: actions/checkout@v3
@@ -37,6 +37,6 @@ jobs:
           echo "KEY_3=${KEY_3}" >> .env
           echo "PORT=${PORT}" >> .env
 
-
-      - name: Restart Node.js application with PM2
-        run: pm2 restart node_https_ec2_server
+      # Uncomment after setup pm2 to run node app
+      # - name: Restart Node.js application with PM2
+      #   run: pm2 restart node_https_ec2_server
