@@ -60,5 +60,8 @@ app.use(function (req, res) {
   res.send({ error: "Sorry, can't find that" });
 });
 
+console.log("port: ", port);
+console.log("apiKeys: ", apiKeys);
+
 app.listen(port);
 console.log("App is listening on port " + port);
