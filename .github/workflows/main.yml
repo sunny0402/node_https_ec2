@@ -38,5 +38,5 @@ jobs:
           echo "PORT=${PORT}" >> .env
 
       # Uncomment after setup pm2 to run node app
-      # - name: Restart Node.js application with PM2
-      #   run: pm2 restart node_https_ec2_server
+      - name: Restart Node.js application with PM2
+        run: pm2 restart my_node_app
