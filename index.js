@@ -60,7 +60,7 @@ app.use(function (req, res) {
   res.send({ error: "Sorry, can't find that" });
 });
 
-console.log("testing ... again");
+console.log("testing ... again ... and again");
 console.log("port: ", port);
 console.log("apiKeys: ", apiKeys);
 
