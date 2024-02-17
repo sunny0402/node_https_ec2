@@ -29,8 +29,6 @@ app.use(function (req, res, next) {
   console.log("Received request:");
   console.log(`Method: ${req.method}`);
   console.log(`URL: ${req.originalUrl}`);
-  console.log("Headers:");
-  console.log(req.headers);
   console.log("Body:");
   console.log(req.body);
   console.log("-------------------------");
@@ -38,8 +36,7 @@ app.use(function (req, res, next) {
   res.on("finish", function () {
     console.log("Sent response:");
     console.log(`Status: ${res.statusCode}`);
-    console.log("Headers:");
-    console.log(res.getHeaders());
+    console.log(`res: ${res}`);
     console.log("-------------------------");
   });
 
@@ -62,7 +59,7 @@ app.use("/api", function (req, res, next) {
 
 // curl "http://localhost:8080/api/users?api-key=abc123"
 app.get("/api/users", function (req, res) {
-  res.send(users);
+  res.status(200).send(users);
 });
 
 // curl "http://localhost:8080/api/user/tobi/repos/?api-key=abc123"
@@ -70,7 +67,7 @@ app.get("/api/user/:name/repos", function (req, res, next) {
   const name = req.params.name;
   const user = userRepos[name];
 
-  if (user) res.send(user);
+  if (user) res.status(200).send(user);
   else next();
 });
 
