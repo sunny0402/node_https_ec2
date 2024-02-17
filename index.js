@@ -60,7 +60,7 @@ app.use(function (req, res) {
   res.send({ error: "Sorry, can't find that" });
 });
 
-console.log("Now using node v20.11.0 (npm v10.2.4)");
+console.log(`"$NVM_DIR/versions/node/v20.11.0/bin/pm2" "/usr/local/bin/pm2"`);
 console.log("port: ", port);
 console.log("apiKeys: ", apiKeys);
 
