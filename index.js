@@ -1,7 +1,11 @@
 //Express.js example taken from: https://github.com/expressjs/express/blob/master/examples/web-service/index.js
 require("dotenv").config();
+
 const express = require("express");
 const app = express();
+
+const bodyParser = require("body-parser");
+app.use(bodyParser());
 
 const port = process.env.PORT || 5000;
 
@@ -20,6 +24,27 @@ function error(status, msg) {
   err.status = status;
   return err;
 }
+
+app.use(function (req, res, next) {
+  console.log("Received request:");
+  console.log(`Method: ${req.method}`);
+  console.log(`URL: ${req.originalUrl}`);
+  console.log("Headers:");
+  console.log(req.headers);
+  console.log("Body:");
+  console.log(req.body);
+  console.log("-------------------------");
+
+  res.on("finish", function () {
+    console.log("Sent response:");
+    console.log(`Status: ${res.statusCode}`);
+    console.log("Headers:");
+    console.log(res.getHeaders());
+    console.log("-------------------------");
+  });
+
+  next();
+});
 
 app.use("/api", function (req, res, next) {
   const key = req.query["api-key"];
