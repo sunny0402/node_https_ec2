@@ -31,14 +31,14 @@ const loggerMiddleware = (req, res, next) => {
   const originalSend = res.send;
 
   // Override the res.send method
-  res.send = function (content) {
+  res.send = function (responseContent) {
     // Log the response content and status code
     console.log("Response status code:", res.statusCode);
     console.log("Response content:");
-    console.log(content);
+    console.log(responseContent);
     console.log("-------------------------");
     // Call the original res.send method
-    originalSend.call(this, content);
+    return originalSend.call(this, responseContent);
   };
   next();
 };
@@ -90,7 +90,6 @@ app.use(function (req, res) {
   res.send({ error: "Sorry, can't find that" });
 });
 
-console.log(`"$NVM_DIR/versions/node/v20.11.0/bin/pm2" "/usr/local/bin/pm2"`);
 console.log("port: ", port);
 console.log("apiKeys: ", apiKeys);
 
