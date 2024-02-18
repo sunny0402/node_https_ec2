@@ -4,8 +4,9 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
-const bodyParser = require("body-parser");
-app.use(bodyParser());
+// TODO uninstall and remove from package.json
+// const bodyParser = require("body-parser");
+// app.use(bodyParser());
 
 const port = process.env.PORT || 5000;
 
@@ -19,30 +20,39 @@ const userRepos = {
   jane: ["repo 3"],
 };
 
-const loggerMiddleware = (req, res, next) => {
-  console.log("Received request:");
-  console.log(`Method: ${req.method}`);
-  console.log(`URL: ${req.originalUrl}`);
-  console.log("Body:");
-  console.log(req.body);
-  console.log("-------------------------");
+// const loggerMiddleware = (req, res, next) => {
+//   console.log("Received request:");
+//   console.log(`Method: ${req.method}`);
+//   console.log(`URL: ${req.originalUrl}`);
+//   console.log("Body:");
+//   console.log(req.body);
+//   console.log("-------------------------");
 
+//   const originalSendFunc = res.send.bind(res);
+
+//   // Override the res.send method
+//   res.send = function (responseContent) {
+//     // Log the response content and status code
+//     console.log("Response status code:", res.statusCode);
+//     console.log("Response content:");
+//     console.log(responseContent);
+//     console.log("-------------------------");
+//     // Call the original res.send method
+//     return originalSendFunc(responseContent);
+//   };
+//   next();
+// };
+
+// app.use(loggerMiddleware);
+
+app.use(function responseLogger(req, res, next) {
   const originalSendFunc = res.send.bind(res);
-
-  // Override the res.send method
-  res.send = function (responseContent) {
-    // Log the response content and status code
-    console.log("Response status code:", res.statusCode);
-    console.log("Response content:");
-    console.log(responseContent);
-    console.log("-------------------------");
-    // Call the original res.send method
-    return originalSendFunc(responseContent);
+  res.send = function (body) {
+    console.log(body); // do whatever here
+    return originalSendFunc(body);
   };
   next();
-};
-
-app.use(loggerMiddleware);
+});
 
 const error = (status, msg) => {
   const err = new Error(msg);
