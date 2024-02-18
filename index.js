@@ -24,8 +24,10 @@ const loggerMiddleware = (req, res, next) => {
   console.log("Received request:");
   console.log(`Method: ${req.method}`);
   console.log(`URL: ${req.originalUrl}`);
-  console.log("Body:");
-  console.log(req.body);
+  console.log("Route parameters:");
+  console.log(req.params);
+  console.log("Query parameters:");
+  console.log(req.query);
   console.log("-------------------------");
 
   function newResponseWithLog(resObj, resSendFunc) {
@@ -50,29 +52,6 @@ const loggerMiddleware = (req, res, next) => {
 };
 
 app.use(loggerMiddleware);
-
-// app.use(function responseLogger(req, res, next) {
-//   const originalSendFunc = res.send.bind(res);
-//   res.send = function (body) {
-//     console.log(body); // do whatever here
-//     return originalSendFunc(body);
-//   };
-//   next();
-// });
-
-// app.use(function responseLogger(req, res, next) {
-//   // Capture the original send method
-//   const originalSendFunc = res.send;
-
-//   // Override the send method to log the response content
-//   res.send = function (body) {
-//     console.log(body); // Log the response content
-//     return originalSendFunc.call(this, body); // Call the original send method
-//   };
-
-//   // Call the next middleware or route handler
-//   next();
-// });
 
 const error = (status, msg) => {
   const err = new Error(msg);
