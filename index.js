@@ -27,8 +27,7 @@ const loggerMiddleware = (req, res, next) => {
   console.log(req.body);
   console.log("-------------------------");
 
-  // Store the original res.send method
-  const originalSend = res.send;
+  const originalSendFunc = res.send.bind(res);
 
   // Override the res.send method
   res.send = function (responseContent) {
@@ -38,7 +37,7 @@ const loggerMiddleware = (req, res, next) => {
     console.log(responseContent);
     console.log("-------------------------");
     // Call the original res.send method
-    return originalSend.call(this, responseContent);
+    return originalSendFunc(responseContent);
   };
   next();
 };
