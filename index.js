@@ -45,12 +45,26 @@ const userRepos = {
 
 // app.use(loggerMiddleware);
 
+// app.use(function responseLogger(req, res, next) {
+//   const originalSendFunc = res.send.bind(res);
+//   res.send = function (body) {
+//     console.log(body); // do whatever here
+//     return originalSendFunc(body);
+//   };
+//   next();
+// });
+
 app.use(function responseLogger(req, res, next) {
-  const originalSendFunc = res.send.bind(res);
+  // Capture the original send method
+  const originalSendFunc = res.send;
+
+  // Override the send method to log the response content
   res.send = function (body) {
-    console.log(body); // do whatever here
-    return originalSendFunc(body);
+    console.log(body); // Log the response content
+    return originalSendFunc.call(this, body); // Call the original send method
   };
+
+  // Call the next middleware or route handler
   next();
 });
 
