@@ -19,13 +19,7 @@ const userRepos = {
   jane: ["repo 3"],
 };
 
-function error(status, msg) {
-  const err = new Error(msg);
-  err.status = status;
-  return err;
-}
-
-app.use(function (req, res, next) {
+const loggerMiddleware = (req, res, next) => {
   console.log("Received request:");
   console.log(`Method: ${req.method}`);
   console.log(`URL: ${req.originalUrl}`);
@@ -33,15 +27,29 @@ app.use(function (req, res, next) {
   console.log(req.body);
   console.log("-------------------------");
 
-  res.on("finish", function () {
-    console.log("Sent response:");
-    console.log(`Status: ${res.statusCode}`);
-    console.log(`res: ${res}`);
-    console.log("-------------------------");
-  });
+  // Store the original res.send method
+  const originalSend = res.send;
 
+  // Override the res.send method
+  res.send = function (content) {
+    // Log the response content and status code
+    console.log("Response status code:", res.statusCode);
+    console.log("Response content:");
+    console.log(content);
+    console.log("-------------------------");
+    // Call the original res.send method
+    originalSend.call(this, content);
+  };
   next();
-});
+};
+
+app.use(loggerMiddleware);
+
+const error = (status, msg) => {
+  const err = new Error(msg);
+  err.status = status;
+  return err;
+};
 
 app.use("/api", function (req, res, next) {
   const key = req.query["api-key"];
