@@ -20,30 +20,36 @@ const userRepos = {
   jane: ["repo 3"],
 };
 
-// const loggerMiddleware = (req, res, next) => {
-//   console.log("Received request:");
-//   console.log(`Method: ${req.method}`);
-//   console.log(`URL: ${req.originalUrl}`);
-//   console.log("Body:");
-//   console.log(req.body);
-//   console.log("-------------------------");
+const loggerMiddleware = (req, res, next) => {
+  console.log("Received request:");
+  console.log(`Method: ${req.method}`);
+  console.log(`URL: ${req.originalUrl}`);
+  console.log("Body:");
+  console.log(req.body);
+  console.log("-------------------------");
 
-//   const originalSendFunc = res.send.bind(res);
+  function newResponseWithLog(resObj, resSendFunc) {
+    function logResponse(responseContent) {
+      resObj.contentToLog = responseContent;
+      resObj.send = resSendFunc;
+      resObj.send(responseContent);
+    }
 
-//   // Override the res.send method
-//   res.send = function (responseContent) {
-//     // Log the response content and status code
-//     console.log("Response status code:", res.statusCode);
-//     console.log("Response content:");
-//     console.log(responseContent);
-//     console.log("-------------------------");
-//     // Call the original res.send method
-//     return originalSendFunc(responseContent);
-//   };
-//   next();
-// };
+    // Bind the logResponse function to the resObj context
+    const boundLogResponse = logResponse.bind(resObj);
 
-// app.use(loggerMiddleware);
+    return boundLogResponse;
+  }
+
+  // Override the res.send method
+  res.send = newResponseWithLog(res, res.send);
+  res.on("finish", () => {
+    console.log("response sent", res.contentToLog);
+  });
+  next();
+};
+
+app.use(loggerMiddleware);
 
 // app.use(function responseLogger(req, res, next) {
 //   const originalSendFunc = res.send.bind(res);
@@ -54,19 +60,19 @@ const userRepos = {
 //   next();
 // });
 
-app.use(function responseLogger(req, res, next) {
-  // Capture the original send method
-  const originalSendFunc = res.send;
+// app.use(function responseLogger(req, res, next) {
+//   // Capture the original send method
+//   const originalSendFunc = res.send;
 
-  // Override the send method to log the response content
-  res.send = function (body) {
-    console.log(body); // Log the response content
-    return originalSendFunc.call(this, body); // Call the original send method
-  };
+//   // Override the send method to log the response content
+//   res.send = function (body) {
+//     console.log(body); // Log the response content
+//     return originalSendFunc.call(this, body); // Call the original send method
+//   };
 
-  // Call the next middleware or route handler
-  next();
-});
+//   // Call the next middleware or route handler
+//   next();
+// });
 
 const error = (status, msg) => {
   const err = new Error(msg);
