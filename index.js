@@ -19,7 +19,7 @@ const userRepos = {
 };
 
 const loggerMiddleware = (req, res, next) => {
-  console.log("Received request:");
+  console.log("Request:");
   console.log(`Method: ${req.method}`);
   console.log(`URL: ${req.originalUrl}`);
   console.log("-------------------------");
@@ -32,7 +32,7 @@ const loggerMiddleware = (req, res, next) => {
   };
 
   res.on("finish", () => {
-    console.log("res.responseToLog: ", res.responseToLog);
+    console.log("Response: ", res.responseToLog);
   });
 
   next();
@@ -85,6 +85,7 @@ app.use(function (req, res) {
   res.send({ error: "Sorry, can't find that" });
 });
 
+console.log("Environment variables");
 console.log("port: ", port);
 console.log("apiKeys: ", apiKeys);
 
