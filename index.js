@@ -4,7 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 5000;
 
@@ -33,6 +33,7 @@ const loggerMiddleware = (req, res, next) => {
 
   res.on("finish", () => {
     console.log("Response: ", res.responseToLog);
+    console.log("-------------------------");
   });
 
   next();
