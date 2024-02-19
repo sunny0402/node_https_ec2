@@ -4,9 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
-// TODO uninstall and remove from package.json
-// const bodyParser = require("body-parser");
-// app.use(bodyParser());
+app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 5000;
 
@@ -24,30 +22,19 @@ const loggerMiddleware = (req, res, next) => {
   console.log("Received request:");
   console.log(`Method: ${req.method}`);
   console.log(`URL: ${req.originalUrl}`);
-  console.log("Route parameters:");
-  console.log(req.params);
-  console.log("Query parameters:");
-  console.log(req.query);
   console.log("-------------------------");
 
-  function newResponseWithLog(resObj, resSendFunc) {
-    function logResponse(responseContent) {
-      resObj.contentToLog = responseContent;
-      resObj.send = resSendFunc;
-      resObj.send(responseContent);
-    }
+  const originalSendFunc = res.send.bind(res);
 
-    // Bind the logResponse function to the resObj context
-    const boundLogResponse = logResponse.bind(resObj);
+  res.send = function (body) {
+    res.responseToLog = body;
+    return originalSendFunc(body);
+  };
 
-    return boundLogResponse;
-  }
-
-  // Override the res.send method
-  res.send = newResponseWithLog(res, res.send);
   res.on("finish", () => {
-    console.log("response sent", res.contentToLog);
+    console.log("res.responseToLog: ", res.responseToLog);
   });
+
   next();
 };
 
@@ -78,7 +65,7 @@ app.get("/api/users", function (req, res) {
   res.status(200).send(users);
 });
 
-// curl "http://localhost:8080/api/user/tobi/repos/?api-key=abc123"
+// curl "http://localhost:8080/api/user/jane/repos?api-key=abc123"
 app.get("/api/user/:name/repos", function (req, res, next) {
   const name = req.params.name;
   const user = userRepos[name];
